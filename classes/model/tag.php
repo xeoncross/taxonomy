@@ -17,10 +17,10 @@ class Model_Tag extends Database_ORM {
 	 * @param string $string the comma separated string of tags
 	 * @return array
 	 */
-	public function process_tag_string($string = '')
+	public static function parse($string = '')
 	{
 		// Don't allow tagging strings over 300 characters long
-		if(mb_strlen($string) > 300)
+		if( ! $string OR mb_strlen($string) > 300)
 		{
 			return array();
 		}
