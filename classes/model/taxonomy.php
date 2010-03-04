@@ -170,9 +170,12 @@ class Model_Taxonomy extends Database_ORM {
 	 * number of entries.
 	 *
 	 * @param string $type one of T/U/O (Tag/User/Object)
+	 * @param int $limit the SQL limit
+	 * @param int $offset the SQL offset
+	 * @param string $where the SQL where
 	 * @return array of ids
 	 */
-	public function popular($type = 'T', $limit = 10, $offset = 0)
+	public function popular($type = 'T', $limit = 10, $offset = 0, $where = '')
 	{
 		$fields = array(
 			'T' => 'tag_id',  
@@ -182,7 +185,7 @@ class Model_Taxonomy extends Database_ORM {
 
 		// Build SQL
 		$sql = 'SELECT '. $fields[$type].', COUNT(*) as count FROM '. $this->table
-		.' GROUP BY '. $fields[$type].' ORDER BY count DESC'
+		.' GROUP BY '. $fields[$type].' ORDER BY count DESC '. $where
 		. ($limit ? "\nLIMIT ". ($offset ? $offset. ', ' : ''). $limit : '');
 
 		// Compile and execute the query using the ID given
@@ -206,9 +209,12 @@ class Model_Taxonomy extends Database_ORM {
 	 * Fetch the most recent T/U/O (Tag/User/Object) in the system.
 	 *
 	 * @param string $type one of T/U/O (Tag/User/Object)
+	 * @param int $limit the SQL limit
+	 * @param int $offset the SQL offset
+	 * @param string $where the SQL where
 	 * @return array of ids
 	 */
-	public function recent($type = 'T', $limit = 10, $offset = 0)
+	public function recent($type = 'T', $limit = 10, $offset = 0, $where = '')
 	{
 		$fields = array(
 			'T' => 'tag_id',  
@@ -218,7 +224,7 @@ class Model_Taxonomy extends Database_ORM {
 
 		// Build SQL
 		$sql = 'SELECT '. $fields[$type].', date FROM '. $this->table
-		.' GROUP BY '. $fields[$type].' ORDER BY date DESC'
+		.' GROUP BY '. $fields[$type].' ORDER BY date DESC '. $where
 		. ($limit ? "\nLIMIT ". ($offset ? $offset. ', ' : ''). $limit : '');
 
 		// Compile and execute the query using the ID given
@@ -271,7 +277,8 @@ class Model_Taxonomy extends Database_ORM {
 			$tag_url = str_replace(array('[[id]]', '[[tag]]'), $replace, $url);
 
 			// Build the link
-			$html .= '<span style="font-size:'. $size.'%"><a class="tag" href="'.$tag_url.'/">'.$tag->tag.'</a></span>';
+			$html .= '<span style="font-size:'. $size.'%"><a class="tag" href="'.$tag_url.'/">'
+					.$tag->tag."</a></span>\n";
 
 		}
 
